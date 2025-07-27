@@ -7,27 +7,29 @@
 
 import SwiftUI
 
-enum Route: Hashable {
-    case scan
-}
+//enum Route: Hashable {
+//    case scan
+//}
 
 struct ContentView: View {
-    @State private var path = NavigationPath()
+    //    @State private var path = NavigationPath()
+    @State private var showScanner = false
     
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                Button("Start") {
-                    path.append(Route.scan)
+        NavigationStack {
+            ScannedRoomListView()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button{
+                            showScanner = true
+                        } label : {
+                            Label("New Scan", systemImage: "plus.viewfinder")
+                        }
+                    }
                 }
-            }
-            .navigationTitle("Room Scan Demo")
-            .navigationDestination(for: Route.self) { route in
-                switch route {
-                case .scan:
-                    ScannerView()
-                }
-            }
+        }
+        .fullScreenCover(isPresented: $showScanner) {
+            ScannerView()
         }
     }
 }

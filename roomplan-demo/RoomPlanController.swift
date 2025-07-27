@@ -31,11 +31,10 @@ class RoomPlanController: RoomCaptureViewDelegate {
         return true
     }
     
-    
     func captureView(didPresent processedResult: CapturedRoom, error: (Error)?) {
         DispatchQueue.main.async {
-           self.finalResult = processedResult
-       }
+            self.finalResult = processedResult
+        }
     }
     
     func startSession() {
@@ -45,8 +44,30 @@ class RoomPlanController: RoomCaptureViewDelegate {
     func stopSession() {
         captureView.captureSession.stop()
     }
-}
+    
+    func saveFinalResultToAppStorage() -> URL? {
+        guard let room = finalResult else { return nil }
 
+        let folder = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("SavedRooms", isDirectory: true)
+        let usdzURL = folder.appendingPathComponent("Scan.usdz")
+        let jsonURL = folder.appendingPathComponent("Scan.json")
+
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let jsonData = try encoder.encode(room)
+            try jsonData.write(to: jsonURL)
+
+            try room.export(to: usdzURL, exportOptions: .parametric)
+            return usdzURL
+        } catch {
+            return nil
+        }
+    }
+}
 
 struct RoomCaptureViewRepresentable : UIViewRepresentable {
     
