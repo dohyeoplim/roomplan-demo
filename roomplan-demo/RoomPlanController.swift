@@ -8,7 +8,7 @@
 import RoomPlan
 import SwiftUI
 
-class RoomPlanController :  RoomCaptureViewDelegate {
+class RoomPlanController: RoomCaptureViewDelegate {
     func encode(with coder: NSCoder) {
         fatalError("Not Needed")
     }
@@ -20,8 +20,7 @@ class RoomPlanController :  RoomCaptureViewDelegate {
     static var instance = RoomPlanController()
     var captureView  : RoomCaptureView
     var sessionConfig : RoomCaptureSession.Configuration = RoomCaptureSession.Configuration()
-    var finalResult : CapturedRoom?
-    
+    @Published var finalResult: CapturedRoom?
     
     init() {
         captureView = RoomCaptureView(frame: .zero)
@@ -34,7 +33,9 @@ class RoomPlanController :  RoomCaptureViewDelegate {
     
     
     func captureView(didPresent processedResult: CapturedRoom, error: (Error)?) {
-        finalResult = processedResult
+        DispatchQueue.main.async {
+           self.finalResult = processedResult
+       }
     }
     
     func startSession() {
@@ -50,7 +51,7 @@ class RoomPlanController :  RoomCaptureViewDelegate {
 struct RoomCaptureViewRepresentable : UIViewRepresentable {
     
     func makeUIView(context: Context) -> RoomCaptureView{
-        RoomPlanController.instance.captureView
+        return RoomPlanController.instance.captureView
     }
     
     func updateUIView(_ uiView: RoomCaptureView, context: Context) {

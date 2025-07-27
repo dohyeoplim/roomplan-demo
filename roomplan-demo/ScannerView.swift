@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ScannerView: View {
+    @Environment(\.dismiss) private var dismiss
     var roomController = RoomPlanController.instance
     @State private var doneScanning : Bool = false
     
@@ -33,8 +34,16 @@ struct ScannerView: View {
                     .background(Color.white)
                     .opacity(0.8)
                     .cornerRadius(100)
+                } else {
+                    Button("Back") {
+                        dismiss()
+                    }
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(Color.white)
+                    .cornerRadius(100)
                 }
-              
             }
             .padding(.bottom,10)
         }
