@@ -7,15 +7,28 @@
 
 import SwiftUI
 
+enum Route: Hashable {
+    case scan
+}
+
 struct ContentView: View {
+    @State private var path = NavigationPath()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            VStack {
+                Button("Start") {
+                    path.append(Route.scan)
+                }
+            }
+            .navigationTitle("Room Scan Demo")
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .scan:
+                    ScannerView()
+                }
+            }
         }
-        .padding()
     }
 }
 
